@@ -7,22 +7,27 @@ abstract class Failure {
 
 class ValidationFailure extends Failure {
   final String field;
-  const ValidationFailure({required String message, required this.field})
-      : super(message: message);
+  const ValidationFailure({required super.message, required this.field});
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure({required String message}) : super(message: message);
+  const NetworkFailure({required super.message});
 }
 
 class AuthFailure extends Failure {
   final String? code;
-  const AuthFailure({required String message, this.code})
-      : super(message: message);
+  const AuthFailure({required super.message, this.code});
 }
 
 class UnexpectedFailure extends Failure {
   final StackTrace? stackTrace;
-  const UnexpectedFailure({required String message, this.stackTrace})
-      : super(message: message);
+  const UnexpectedFailure({required super.message, this.stackTrace});
+}
+
+class ServerFailure extends Failure {
+  const ServerFailure({required super.message});
+}
+
+class FirestoreFailure extends Failure {
+  const FirestoreFailure({required super.message});
 }

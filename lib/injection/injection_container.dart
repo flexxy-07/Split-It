@@ -11,6 +11,12 @@ import 'package:split_it/features/auth/domain/usecases/sign_in_with_email_usecas
 import 'package:split_it/features/auth/domain/usecases/sign_in_with_google_usecase.dart';
 import 'package:split_it/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:split_it/features/auth/domain/usecases/sign_up_with_email_usecase.dart';
+import 'package:split_it/features/groups/data/datasources/group_remote_datasource.dart';
+import 'package:split_it/features/groups/data/repositories/group_repository_impl.dart';
+import 'package:split_it/features/groups/domain/repositories/group_repository.dart';
+import 'package:split_it/features/groups/domain/usecases/add_member_usecase.dart';
+import 'package:split_it/features/groups/domain/usecases/create_group_usecase.dart';
+import 'package:split_it/features/groups/domain/usecases/watch_user_groups_usecase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/network/network_info_impl.dart';
 import '../core/network/network_info.dart';
@@ -24,6 +30,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => Supabase.instance.client);
   sl.registerLazySingleton(() => Connectivity());
   sl.registerLazySingleton(() => GoogleSignIn.instance);
+  
 
 
   // core
@@ -52,5 +59,16 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetCurrentUserUseCase(sl()));
 
   await sl<GoogleSignIn>().initialize();
-  
+
+
+  // ─── Groups ─────────────────────────────────────────────────
+  sl.registerLazySingleton<GroupRemoteDatasource>(
+    () => GroupRemoteDatasourceImpl(firestore: sl()),
+  );
+  sl.registerLazySingleton<GroupRepository>(
+    () => GroupRepositoryImpl(remoteDataSource: sl(), networkInfo: sl())
+  );
+  sl.registerLazySingleton(() => CreateGroupUsecase(sl()));
+  sl.registerLazySingleton(() => WatchUserGroupsUsecase(sl()));
+  sl.registerLazySingleton(() => AddMemberUseCase(sl()));
 }
